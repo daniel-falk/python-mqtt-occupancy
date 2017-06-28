@@ -1,0 +1,13 @@
+[Unit]
+Description=Accumulate the occupancy from people counters
+Requires=mysql.service
+
+[Service]
+Type=simple
+WorkingDirectory=/home/pi/occupancy-accumulator
+ExecStart=/home/pi/occupancy-accumulator/.env/bin/python -moccacc -u
+StandardError=journal
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

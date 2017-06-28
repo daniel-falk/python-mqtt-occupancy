@@ -6,7 +6,7 @@ setup(
         description = 'Accumulates people counter data to occupancy data',
         author = 'Daniel Falk',
         author_email = 'daniel@da-robotteknik.se',
-        url = '***********',
+        url = 'https://github.com/daniel-falk/python-mqtt-occupancy',
         license = 'MIT',
         install_requires = [
             'mysqlclient',
