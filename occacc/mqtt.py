@@ -3,7 +3,7 @@ import socket
 from time import sleep
 from random import randint
 
-from occacc.log import logger
+from occacc.logger import logger, LOG
 
 
 class Mqtt(object):
@@ -34,7 +34,7 @@ class Mqtt(object):
                 self.client.connect(self.SERVER, keepalive=self.KEEP_ALIVE)
                 self.connected = True
             except socket.error:
-                logger("Failed to connect to mqtt... Retrying in {} seconds".format(self.retry_time))
+                logger("Failed to connect to mqtt... Retrying in {} seconds".format(self.retry_time), LOG.WARNING)
                 sleep(self.retry_time)
                 self.retry_time = min(self.MAX_RETRY_TIME, self.retry_time*2)
 
@@ -62,14 +62,14 @@ class Mqtt(object):
 '''
 callback for paho on mqtt connected
 '''
-def on_connect(client, mqtt, rc):
+def on_connect(client, mqtt, flags, rc):
     if rc == 0:
         logger("Connected to mqtt")
         for topic in mqtt.topics:
             logger("Subscribing to topic: {}".format(topic))
             client.subscribe(topic, 1)
         return
-    logger("Connection to mqtt failed with status " + str(rc))
+    logger("Connection to mqtt failed with status " + str(rc), LOG.ERROR)
     mqtt.connected = False
     sleep(mqtt.retry_time)
     mqtt.retry_time = min(mqtt.MAX_RETRY_TIME, mqtt.retry_time*2)
@@ -80,7 +80,7 @@ def on_connect(client, mqtt, rc):
 callback for paho on mqtt disconnect
 '''
 def on_disconnect(client, mqtt, rc):
-    logger("Disconnected from mqtt with reason {}...".format(rc))
+    logger("Disconnected from mqtt with reason {}...".format(rc), LOG.ERROR)
     mqtt.connected = False
     if rc != 0:
         mqtt.try_connect()
