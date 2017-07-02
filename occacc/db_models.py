@@ -21,7 +21,10 @@ class Occupancy(Base):
     time = Column(DateTime, default=func.now())
 
 
-engine = create_engine('{type}://{username}:{password}@{host}/{database}'.format(**SQL), encoding='utf-8')
+engine = create_engine(
+    '{type}://{username}:{password}@{host}/{database}'.format(**SQL),
+    pool_recycle = 3600, # Mysql close idle connections after some time (default 8 hours)
+    encoding = 'utf-8')
 
 wait = 0.5
 while wait > 0:
